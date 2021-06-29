@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>添加会员</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+    <link rel="stylesheet" href="../js/lay-module/step-lay/step.css" media="all">
+</head>
+
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <div class="layui-fluid">
+            <div class="layui-card">
+                <div class="layui-card-body" style="padding-top: 40px;">
+                    <div class="layui-carousel" id="stepForm" lay-filter="stepForm" style="margin: 0 auto;">
+                        <div carousel-item>
+                            <div>
+                                <form class="layui-form" style="margin: 0 auto;max-width: 460px;padding-top: 40px;">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">会员手机号</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" placeholder="请填写手机号码" class="layui-input"
+                                                   lay-verify="number" name="vipPhone" required />
+
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">会员积分:</label>
+                                        <div class="layui-input-block">
+                                            <input type="number" placeholder="请填写会员积分" value="" class="layui-input"
+                                                   lay-verify="number" name="vipIntegral" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <div class="layui-input-block">
+                                            <button class="layui-btn" lay-submit lay-filter="formStep">
+                                                &emsp;下一步&emsp;
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div>
+                                <form class="layui-form" style="margin: 0 auto;max-width: 460px;padding-top: 40px;" >
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">会员卡号：</label>
+                                        <div class="layui-input-block">
+                                            <div class="layui-form-mid layui-word-aux" name="idCard" id="vipNo">639537</div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">会员电话：</label>
+                                        <div class="layui-input-block">
+                                            <div class="layui-form-mid layui-word-aux" id="vipPhone">639537
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">积分余额：</label>
+                                        <div class="layui-input-block">
+                                            <div class="layui-form-mid layui-word-aux" name="integral" id="vipIntegral">3000
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <div class="layui-input-block">
+                                            <button type="button"
+                                                    class="layui-btn layui-btn-primary pre">上一步</button>
+                                            <button class="layui-btn" lay-submit lay-filter="formStep2">
+                                                &emsp;确认创建&emsp;
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div>
+                                <div style="text-align: center;margin-top: 90px;">
+                                    <i class="layui-icon layui-circle"
+                                       style="color: white;font-size:30px;font-weight:bold;background: #52C41A;padding: 20px;line-height: 80px;">&#xe605;</i>
+                                    <div style="font-size: 24px;color: #333;font-weight: 500;margin-top: 30px;">
+                                        创建成功
+                                    </div>
+                                    <div style="font-size: 14px;color: #666;margin-top: 20px;">欢迎加入会员</div>
+                                </div>
+                                <div style="text-align: center;margin-top: 50px;">
+                                    <button class="layui-btn next">再次创建</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div style="color: #666;margin-top: 30px;margin-bottom: 40px;padding-left: 30px;">
+                        <h3>说明</h3><br>
+                        <h4>创建会员</h4>
+                        <p>会员卡号和会员手机号相同</p>
+                        <br>
+                        <h4>会员修改</h4>
+                        <p>需要修改会员请与管理员联系</p>
+                        <br>
+                        <h4>会员权益</h4>
+                        <p>会员可享受本店打折商品9.5折，对于同一商品在特价期间则可以参与折上折</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="../lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+<script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<script>
+    layui.use(['form', 'step'], function () {
+        var $ = layui.$,
+            form = layui.form,
+            step = layui.step;
+
+        step.render({
+            elem: '#stepForm',
+            filter: 'stepForm',
+            width: '100%', //设置容器宽度
+            stepWidth: '750px',
+            height: '500px',
+            stepItems: [{
+                title: '填写会员信息'
+            }, {
+                title: '确认会员信息'
+            }, {
+                title: '完成'
+            }]
+        });
+
+
+        form.on('submit(formStep)', function (data) {
+
+            $("#vipNo").text(data.field.vipPhone);
+            $("#vipPhone").text(data.field.vipPhone);
+
+            $("#vipIntegral").text(data.field.vipIntegral);
+            step.next('#stepForm');
+            return false;
+        });
+
+        form.on('submit(formStep2)', function (data) {
+            var idCard= $("#vipNo").text();
+            var integral= $("#vipIntegral").text();
+
+            $.ajax({
+                type:"POST",
+                url:"/addUser",
+                // data:JSON.stringify(data.field),
+                data:{idCard:idCard,integral:integral},
+                //contentType:"application/json;charset=utf-8",
+                //async:false,
+                success:function(result){
+                    if (result=="添加成功"){
+
+                        step.next('#stepForm');
+                        window.parent.location.reload();
+                    }else if(result=="此卡号已存在"){
+                        layer.alert("此卡号已存在！请返回上一步修改卡号")
+                    }
+
+                },
+                error:function (data, status, e){
+                    alert("网络不佳！请稍后重试");
+                }
+            })
+
+
+            return false;
+        });
+
+        $('.pre').click(function () {
+            step.pre('#stepForm');
+        });
+
+        $('.next').click(function () {
+
+            step.next('#stepForm');
+            $(".layui-input").val("");
+        });
+
+    })
+</script>
+</body>
+
+</html>

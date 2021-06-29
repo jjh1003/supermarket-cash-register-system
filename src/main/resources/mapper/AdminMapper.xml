@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"><!--mapper文件约束头-->
+<mapper namespace="com.zlx.dao.AdminDao">
+    <select id="queryAllRecordByCondition" parameterType="map" resultMap="AdminMapping">
+        SELECT buytotal.totalid AS buy_tid,idcard,gname,price,isbargainprice,bargainPrice,unit,buyAmount,salesMoney,payMoney,changeMoney,integral,username
+        FROM ADMIN ,buyrecord,buytotal,goods,USER WHERE
+        admin.adminid=buytotal.adminid AND user.uid=buytotal.uid
+        AND buytotal.totalid=buyrecord.totalid AND goods.gid = buyrecord.gid
+        <if test="username!=null and username!=''">
+            AND username like concat('%',#{username},'%')
+        </if>
+        <if test="idCard!=null and idCard!=''">
+            and idCard like concat('%',#{idCard},'%')
+        </if>
+    </select>
+
+    <resultMap id="AdminMapping" type="com.zlx.pojo.Admin">
+        <id column="adminid" property="adminid"></id>
+        <result column="username" property="username"></result>
+        <collection property="buyTotalList" ofType="com.zlx.pojo.BuyTotal" resultMap="buyTotalMapping"></collection>
+    </resultMap>
+    <resultMap id="buyTotalMapping" type="com.zlx.pojo.BuyTotal">
+        <id column="buy_tid" property="totalid"></id>
+        <result column="salesMoney" property="salesMoney"></result>
+        <result column="payMoney" property="payMoney"></result>
+        <result column="changeMoney" property="changeMoney"></result>
+        <association property="user" javaType="com.zlx.pojo.User" resultMap="UserMapping"></association>
+        <collection property="buyRecordList" ofType="com.zlx.pojo.BuyRecord" resultMap="BuyRecordMapping"></collection>
+    </resultMap>
+    <resultMap id="UserMapping" type="com.zlx.pojo.User">
+        <result column="idCard" property="idCard"></result>
+        <result column="integral" property="integral"></result>
+    </resultMap>
+    <resultMap id="BuyRecordMapping" type="com.zlx.pojo.BuyRecord">
+        <result column="buyAmount" property="buyAmount"></result>
+        <association property="goods" javaType="com.zlx.pojo.Goods" resultMap="GoodsMapping"></association>
+    </resultMap>
+    <resultMap id="GoodsMapping" type="com.zlx.pojo.Goods">
+        <result column="gName" property="gName"></result>
+        <result column="price" property="price"></result>
+        <result column="isBargainPrice" property="isBargainPrice"></result>
+        <result column="bargainPrice" property="bargainPrice"></result>
+        <result column="unit" property="unit"></result>
+    </resultMap>
+
+
+    <select id="queryAdminByCondition" resultType="com.zlx.pojo.Admin" parameterType="com.zlx.pojo.Admin">
+        select * from admin where identify='收银员'
+        <if test="username!=null and username!=''">
+            and username=#{username}
+        </if>
+    </select>
+    <delete id="deleteAdminById"  parameterType="com.zlx.pojo.Admin">
+        delete from admin where adminid=#{adminid}
+    </delete>
+    <insert id="insertAdmin" parameterType="com.zlx.pojo.Admin" >
+        insert into admin (username,password) values (#{username},#{password});
+    </insert>
+    <select id="queryAdminCount" resultType="int" parameterType="com.zlx.pojo.Admin">
+        select count(*) from admin where username=#{username}
+    </select>
+</mapper>

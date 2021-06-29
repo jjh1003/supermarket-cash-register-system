@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///supermarketcashier?serverTimezone=UTC
+    username: root
+    password: password
+
+    #filters: stat,wall
+    #max-active: 15
+    type: com.alibaba.druid.pool.DruidDataSource
+  thymeleaf: # thymeleaf 视图解析器
+    prefix: classpath:/templates/
+    suffix: .html
+    servlet:
+      content-type: text/html
+    cache: false
+    encoding: UTF-8
+  #jdbc:
+    #template:
+      #3s响应时间
+      #query-timeout: 3
+
+
+#配置mybatis规则
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  #配置全局配置文件，使用此配置后不能使用config-location
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: true

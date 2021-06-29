@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>收银台</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+</head>
+
+<body>
+<!--/*@thymesVar id="admin1" type="Admin"*/-->
+<label id="adminid" th:text="${session.admin.adminid} " hidden></label>
+
+
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索商品和vip</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">商品编号</label>
+                            <div class="layui-input-inline">
+                                <select name="gNo" id="gNo" lay-search="" lay-filter="level">
+                                    <option value="">--请选择--</option>
+                                    <!--/*@thymesVar id="goodsList" type="goods"*/-->
+                                    <!--/*@thymesVar id="gNo" type="String"*/-->
+                                    <option th:each="item:${goodsList}" th:value="${item.gNo}" th:text="${item.gNo}">
+                                        商品编号
+                                    </option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class=" layui-btn-xs">商品id:</label>
+                            <label class=" layui-btn-xs" id="gid" name="gid">无</label>
+
+                            <label class=" layui-btn-xs">商品名 ：</label>
+                            <label class=" layui-btn-xs" id="gName" name="gName">无</label>
+
+                            <label class=" layui-btn-xs">原价：</label>
+                            <label class=" layui-btn-xs" id="price" name="price">无</label>
+
+                            <label class=" layui-btn-xs">是否特价：</label>
+                            <label class=" layui-btn-xs" id="isBargainPrice" name="isBargainPrice">无</label>
+
+                            <label class=" layui-btn-xs">特价价格：</label>
+                            <label class=" layui-btn-xs" id="bargainPrice" name="bargainPrice">无</label>
+
+                            <label class=" layui-btn-xs">单位：</label>
+                            <label class=" layui-btn-xs" id="unit" name="unit">无</label>
+
+                            <label class=" layui-btn-xs">库存：</label>
+                            <label class=" layui-btn-xs" id="stock" name="stock">无</label>
+                        </div>
+                        <br>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">购买数量</label>
+                            <div class="layui-input-inline">
+                                <input type="number" name="buyAmount" id="buyAmount" lay-verify="integer" required
+                                       autocomplete="off" class="layui-input" value="1">
+                            </div>
+
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-add-btn"><i class="layui-icon layui-icon-cart"></i> 添加
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">会员卡号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" required lay-verify="required" id="cardInput" name="idCard"
+                                       autocomplete="off" class="layui-input">
+                            </div>
+                            <label class=" layui-btn-xs">当前使用的vip卡号:</label>
+                            <label class=" layui-btn-xs" id="idCard" name="idCard">无</label>
+                            <label class=" layui-btn-xs" id="uid" name="uid" hidden>无</label>
+                        </div>
+
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">实付款</label>
+                            <div class="layui-input-inline">
+                                <input type="number" lay-verify="number" required id="payMoney" name="payMoney"
+                                       autocomplete="off" class="layui-input" value="0">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm layui-btn-normal data-Settlement-btn" lay-event="Settlement"> 结算
+                </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 清空购物车
+                </button>
+
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+        </script>
+
+    </div>
+</div>
+<script src="../lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+
+<script th:inline="none">
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        form.verify({
+            integer: [/^[+]{0,1}(\d+)$/, '只能填写正整数']
+        })
+        table.render({
+            elem: '#currentTableId',
+            //url: '/queryAllGoodsByCondition',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            data: [
+                {
+                    "gid": "",
+                    "gno": "购物信息显示处",
+                    "gname": "结算自动删除此行",
+                    "price": "无",
+                    "isBargainPrice": "无",
+                    "bargainPrice": "无",
+                    "buyAmount": "无",
+                    "realityPrice": "无",
+                    "unit": "无",
+
+                }
+            ],
+            totalRow: true,
+            LAY_CHECKED: true,
+            cols:
+                [[
+                    {type: "checkbox", fixed: "left", LAY_CHECKED: true},
+                    {field: 'gid', width: 60, title: 'ID', sort: true, align: "center", totalRowText: "合计"},
+                    {field: 'gno', width: 110, title: '商品编号', align: "center"},
+                    {field: 'gname', width: 200, title: '商品名称', sort: true, align: "center"},
+                    {field: 'price', title: '原价', minWidth: 110, sort: true, align: "center"},
+                    {field: 'isBargainPrice', width: 110, title: '是否特价', align: "center"},
+                    {field: 'bargainPrice', width: 110, title: '特价价格', sort: true, align: "center"},
+                    {field: 'buyAmount', width: 110, title: '购买数量', sort: true, align: "center"},
+                    {field: 'realityPrice', width: 110, title: '实付价格', sort: true, align: "center", totalRow: true},
+                    {field: 'unit', title: '单位', minWidth: 80, sort: true, align: "center"},
+                    , {title: '操作', toolbar: '#currentTableBar', align: "center", fixed: "right"}
+
+                ]],
+
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,//限制每一页的行数
+            page: true,
+            skin: 'line',
+            done: function (res, curr, count) {
+                var states = "";
+                for (var i in res.data) {
+                    // 设置复选框为禁用状态
+                    $('tr[data-index=' + i + '] input[type="checkbox"]').prop('disabled', true);
+                    form.render();// 重新渲染一下
+                }
+                //设置表头复选框为禁用状态
+                $('th[data-field=' + 0 + '] input[type="checkbox"]').prop('disabled', true);
+                form.render('checkbox');
+            }
+        });
+
+
+        //监听下拉框选择操作
+        form.on('select(level)', function (data) {
+            //选中的值
+            var gNo = data.value;
+            //$("#gName").text("商品名:" + gNo)
+            if (gNo != "") {
+                $.ajax({
+                    type: "POST",
+                    url: "/queryGoodsByNo",
+                    cache: false,
+                    dataType: 'JSON',
+                    // data:JSON.stringify(data.field),
+                    data: {gNo: gNo},
+                    //contentType:"application/json;charset=utf-8",
+                    //async:false,
+                    success: function (result) {
+
+                        $("#gid").text(result.gid)
+                        $("#gName").text(result.gname)
+                        $("#price").text(result.price)
+                        $("#isBargainPrice").text(result.isBargainPrice)
+                        $("#bargainPrice").text(result.bargainPrice)
+                        $("#unit").text(result.unit)
+                        $("#stock").text(result.stock)
+                    },
+                    error: function (data, status, e) {
+                        alert("网络不佳！请稍后重试");
+                    }
+                })
+            } else {
+                $("#gid").text("无")
+                $("#gName").text("无")
+                $("#price").text("无")
+                $("#isBargainPrice").text("无")
+                $("#bargainPrice").text("无")
+                $("#unit").text("无")
+                $("#stock").text("无")
+            }
+
+        })
+        //复选框事件
+
+        // table.on('checkbox(currentTableFilter)', function (obj) {
+        //     console.log(obj)
+        //     alert("呃呃呃")
+        // });
+
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'Settlement') {  // 监听结算操作
+                var checkStatus = table.checkStatus('currentTableId')
+                    , data = checkStatus.data;
+                //  alert(checkStatus)
+                //  alert(JSON.stringify(checkStatus))
+                // alert(JSON.stringify(data));
+
+                //获取到全选按钮的状态true/false
+                var isAllCheck = checkStatus.isAll;
+
+                if (isAllCheck == "false") {
+                    checkStatus.isAll = true;
+                }
+
+                //选中的第一行数据的gid
+                // alert(data[0].gid)
+
+                var oldData = table.cache["currentTableId"]
+                //遍历缓存表格数据删除空行数据
+                for (let i = 0; i < oldData.length; i++) {
+                    if (oldData[i].gid == "") {
+                        oldData.splice(i, 1);
+                    }
+                }
+                // alert("当前表格数据" + JSON.stringify(oldData));
+                //删除缓存表格内的第一行
+                //oldData.splice(0,1);
+                //重新渲染
+                table.reload('currentTableId', {data: oldData});
+
+
+                //获取最后表格选中的数据，如果不这样获取则会导致后来强制选中的数据获取不到
+                // var newData=table.cache["currentTableId"]
+                // for (let j =0;j<newData.length;j++){
+                //     alert("newData"+JSON.stringify(newData[j]))
+                //     alert(newData[j].gid+newData[j].gname)
+                // }
+
+
+                //获取合计栏的总数
+                var salesMoney = $(".layui-table-total td[data-field='realityPrice']").text();
+
+                //获取实付款金额
+
+                var payMoney = $("#payMoney").val();
+
+                var changeMoney = payMoney - salesMoney;
+                changeMoney=changeMoney.toFixed(2)
+                var uid = $("#uid").text();
+                if (uid != "") {
+                    $(".layui-table-total td[data-field='realityPrice']").text((salesMoney * 0.95).toFixed(2));
+
+                }
+                var adminid = $("#adminid").text();
+                //layer.alert(salesMoney);
+
+
+                if (salesMoney != "" && payMoney != "" && changeMoney > 0 && adminid != "") {
+                    var buyRecordList = JSON.stringify(data);
+                    for (let i = 0; i < data.length; i++) {
+                        if (data[i].gid == "") {
+                            delete data[i];
+                        }
+                        buyRecordList = JSON.stringify(data)
+                    }
+                    if (uid != "无") {
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/insertToBuyTotal",
+                            // data:JSON.stringify(data.field),
+                            data: {
+                                salesMoney: salesMoney,
+                                payMoney: payMoney,
+                                changeMoney: changeMoney,
+                                uid: uid,
+                                adminid: adminid
+                            },
+                            //contentType:"application/json;charset=utf-8",
+                            //async:false,
+                            success: function (result) {
+                                if (result == "结算成功") {
+                                    layer.msg("结算成功，已做记录")
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/insertBuyRecord",
+                                        // data:JSON.stringify(data.field),
+                                        data: buyRecordList,
+                                        contentType: "application/json;charset=utf-8",
+                                        //async:false,
+                                        success: function (result) {
+                                            if (result == "结算成功") {
+                                                layer.msg("结算成功，已做记录")
+
+                                            } else if (result == "结算失败") {
+                                                layer.msg("收银台故障！请联系管理员")
+                                            } else if (result == "无数据") {
+                                                layer.msg("收银台数据为空！");
+                                            }
+                                        },
+                                        error: function (data, status, e) {
+                                        }
+                                    })
+
+                                } else {
+                                    layer.msg("收银台故障！请联系管理员")
+                                }
+                            },
+                            error: function (data, status, e) {
+
+                            }
+                        })
+
+                    } else {
+                        layer.msg("非会员！此次交易不做记录！")
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "/decreaseGoodsStock",
+                        // data:JSON.stringify(data.field),
+                        data: buyRecordList,
+                        contentType: "application/json;charset=utf-8",
+                        //async:false,
+                        success: function (result) {
+
+                        },
+                        error: function (data, status, e) {
+                            alert("错误！")
+                        }
+                    })
+                    //初始化收银台
+                    var initializeData = [
+                        {
+                            "gid": "",
+                            "gno": "购物信息显示处",
+                            "gname": "结算自动删除此行",
+                            "price": "无",
+                            "isBargainPrice": "无",
+                            "bargainPrice": "无",
+                            "buyAmount": "无",
+                            "realityPrice": "无",
+                            "unit": "无",
+                        }
+                    ]
+                    table.reload('currentTableId', {data: initializeData});
+                    $("#idCard").text("无");
+                    $("#uid").text("无")
+                    $("#payMoney").val("");
+                    $("#cardInput").val("");
+                    $("#buyAmount").val("1");
+                    $("#gid").text("无")
+                    $("#gName").text("无")
+                    $("#price").text("无")
+                    $("#isBargainPrice").text("无")
+                    $("#bargainPrice").text("无")
+                    $("#unit").text("无")
+                    $("#gNo").val("");
+                    $("#stock").text("无");
+                } else if (payMoney = "") {
+                    layer.alert("实付款不能为空")
+                } else if (changeMoney < 0) {
+                    layer.alert("请输入数字且实付款不能比总金额低！", {
+                        title: '你的输入有误！'
+                    });
+                }
+
+
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                var initializeData = [
+                    {
+                        "gid": "",
+                        "gno": "购物信息显示处",
+                        "gname": "结算自动删除此行",
+                        "price": "无",
+                        "isBargainPrice": "无",
+                        "bargainPrice": "无",
+                        "buyAmount": "无",
+                        "realityPrice": "无",
+                        "unit": "无",
+
+                    }
+                ]
+                table.reload('currentTableId', {data: initializeData});
+            }
+        });
+        // 监听添加操作
+        form.on('submit(data-add-btn)', function (data) {
+            // var result = JSON.stringify(data.field);
+            // layer.alert(result, {//这里只获取到了搜索框的值
+            //     title: '最终的搜索信息'
+            // });
+            var oldData = table.cache["currentTableId"];
+
+            //获取选择商品编号后对应其他信息的值
+            var gid = $("#gid").text()
+            var gname = $("#gName").text()
+            var price = $("#price").text()
+            var isBargainPrice = $("#isBargainPrice").text()
+            var bargainPrice = $("#bargainPrice").text()
+            var unit = $("#unit").text()
+            var gno = $("#gNo").val();
+            var realityPrice;
+            var buyAmount = $("#buyAmount").val();
+            var stock = $("#stock").text();
+            if (isBargainPrice == "是") {
+                realityPrice = bargainPrice * buyAmount;
+                realityPrice = realityPrice.toFixed(2)
+            } else {
+                realityPrice = price * buyAmount;
+                bargainPrice = "-";
+            }
+
+            var data1 = {
+                "gid": gid,
+                "gno": gno,
+                "gname": gname,
+                "price": price,
+                "isBargainPrice": isBargainPrice,
+                "bargainPrice": bargainPrice,
+                "buyAmount": buyAmount,
+                "realityPrice": realityPrice,
+                "unit": unit
+            };
+            if (gid != "无" && buyAmount != 0 && stock != 0) {
+                oldData.push(data1);
+            } else if (gid == "无") {
+                layer.alert("请选择要加入购物车的商品编号", {
+                    title: '警告'
+                });
+            } else if (buyAmount < 0) {
+                layer.alert("购买数量不能小于0", {
+                    title: '警告'
+                });
+            } else if (stock == 0) {
+                layer.alert("库存为0,请选购其他商品")
+            }
+
+
+            table.reload('currentTableId', {
+                data: oldData
+            });
+            return false;
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'delete') {
+                layer.confirm('确定删除此商品？', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            }
+        });
+        form.on('submit(data-search-btn)', function (data) {
+            // var result = JSON.stringify(data.field);
+            // layer.alert(result, {
+            //     title: '最终的搜索信息'
+            // });
+            $.ajax({
+                type: "POST",
+                url: "/queryUserByCondition",
+                data: {idCard: data.field.idCard, page: 1, limit: 1},
+                //data:userList,
+                //contentType: "application/json;charset=utf-8",
+                //async:false,
+                success: function (result) {
+                    if (result.data != "") {
+                        $("#idCard").text(result.data[0].idCard)
+                        $("#uid").text(result.data[0].uid)
+                        layer.msg("查询成功!");
+                    } else {
+                        $("#idCard").text("无")
+                        $("#uid").text("无")
+                        $("#cardInput").val("")
+                        layer.alert("未查询到此vip卡号")
+                    }
+                },
+                error: function (data, status, e) {
+                    alert("网络不佳！请稍后重试");
+                }
+            })
+
+
+            return false;
+        });
+    });
+
+
+</script>
+
+</body>
+
+</html>

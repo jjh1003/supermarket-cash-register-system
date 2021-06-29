@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>商品库存</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+</head>
+
+<body>
+<input type="text" id="identify" th:value="${session.admin?.identify}" hidden>
+
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">商品编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="gNo" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">商品名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="gName" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">是否特价</label>
+                            <div class="layui-input-inline">
+                                <select name="isBargainPrice">
+                                    <option value="">全部商品</option>
+                                    <option value="是">是</option>
+                                    <option value="否">否</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+             <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
+            </div>
+        </script>
+
+        <table class="layui-hide"  id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+                        <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+                        <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+        </script>
+
+    </div>
+</div>
+<script src="../lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+<script th:inline="none">
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        table.render({
+            elem: '#currentTableId',
+            url: '/queryAllGoodsByCondition',
+             toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+
+            cols:
+                [[
+                    {type: "checkbox", fixed: "left"},
+
+                    {field: 'gid', width: 80, title: 'ID', sort: true,align:"center"},
+                    {field: 'gno', width: 110, title: '商品编号',align:"center"},
+                    {field: 'gname', width: 200, title: '商品名称', sort: true,align:"center"},
+
+                    {field: 'price', title: '原价', minWidth: 80, sort: true,align:"center"},
+                    {field: 'isBargainPrice', width: 110, title: '是否特价',align:"center"},
+                    {field: 'bargainPrice', width: 110, title: '特价价格', sort: true,align:"center"},
+                    {field: 'unit', title: '单位', minWidth: 80, sort: true,align:"center"},
+                    {field: 'stock', width: 110, title: '库存余量', sort: true,align:"center"}
+                    , {title: '操作',width:120, toolbar: '#currentTableBar', align: "center", fixed: "right"}
+
+                ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,//限制每一页的行数
+            page: true,
+            skin: 'line'
+
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            // var result = JSON.stringify(data.field);
+            // layer.alert(result, {
+            //     title: '最终的搜索信息'
+            // });
+
+            //执行搜索重载
+            table.reload('currentTableId', {
+                url:'/queryAllGoodsByCondition',
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    gNo: data.field.gNo,
+                    gName:data.field.gName,
+
+                    isBargainPrice:data.field.isBargainPrice
+                }
+            }, 'data');
+
+            return false;
+        });
+
+
+
+        /**
+         * toolbar监听事件
+         */
+
+        var identify = $("#identify").val();
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {  // 监听添加操作
+                var index = layer.open({
+                    title: '添加商品',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '/addGoods',
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'delete'&&identify=="管理员") {  // 监听删除操作
+                var checkStatus = table.checkStatus('currentTableId')
+                    , data = checkStatus.data;
+                var goodsList = JSON.stringify(data)
+                layer.confirm('你可能选中多条数据，是否继续删除', function (index) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/deleteGoods",
+                        data: goodsList,
+                        //data:userList,
+                        contentType: "application/json;charset=utf-8",
+                        //async:false,
+                        success: function (result) {
+                            if (result == "删除成功") {
+                                table.reload('currentTableId', {
+                                    url: '/queryAllGoodsByCondition',
+                                    page: {
+                                        curr: 1
+                                    }
+                                }, 'data');
+
+                            } else if (result = "删除失败") {
+                                alert("网络不佳！请稍后重试");
+                            } else {
+                                alert("未选中行！")
+                            }
+
+                        },
+                        error: function (data, status, e) {
+                            alert("该条数据与其他数据关联！不能删除");
+                        }
+                    })
+                    layer.close(index);
+                });
+            }else if(obj.event === 'delete'&&identify!="管理员"){
+                alert("你不是管理员！没有权限进行此操作！");
+            }
+        });
+
+        //监听表格复选框选择
+        // table.on('checkbox(currentTableFilter)', function (obj) {
+        //     console.log(obj)
+        // });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit'&&identify=="管理员") {
+
+                var index = layer.open({
+                    title: '编辑用户',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: '/editGoods',
+                    success:function () {
+                        //表单数据回显
+                        var body = layer.getChildFrame('body',index); body.find("#gid").val(data.gid);
+                        var body = layer.getChildFrame('body',index); body.find("#gno").val(data.gno);
+                        var body = layer.getChildFrame('body',index); body.find("#gname").val(data.gname);
+                        var body = layer.getChildFrame('body',index); body.find("#price").val(data.price);
+                        var body = layer.getChildFrame('body',index); body.find("#bargainPrice").val(data.bargainPrice);
+                        var body = layer.getChildFrame('body',index); body.find("#unit").val(data.unit);
+                        var body = layer.getChildFrame('body',index); body.find("#stock").val(data.stock);
+                    }
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delete'&&identify=="管理员") {
+                layer.confirm('确定删除此条数据？', function (index) {
+
+
+                    // alert(JSON.stringify(data.uid))
+                    var goodsList = new Array();
+                    goodsList.push({gid: JSON.stringify(data.gid)});
+                    $.ajax({
+                        type: "POST",
+                        url: "/deleteGoods",
+                        data: JSON.stringify(goodsList),
+                        //data:userList,
+                        contentType: "application/json;charset=utf-8",
+                        //async:false,
+                        success: function (result) {
+                            if (result == "删除成功") {
+
+                                obj.del();
+
+                            } else if (result = "删除失败") {
+                                alert("网络不佳！请稍后重试");
+                            } else {
+                                alert("未选中行！")
+                            }
+
+                        },
+                        error: function (data, status, e) {
+                            alert("该条数据与其他数据关联！不能删除");
+                        }
+                    })
+                    layer.close(index);
+                });
+            }else{
+                alert("你不是管理员！没有权限进行此操作")
+            }
+        });
+
+
+    });
+</script>
+
+</body>
+
+</html>
