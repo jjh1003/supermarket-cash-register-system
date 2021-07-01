@@ -19,6 +19,8 @@ public interface AdminService {
     public Integer deleteAdminById(Admin admin);
     public Integer insertAdmin(Admin admin);
     public Integer queryAdminCount(Admin admin);
+    public Integer adminCount();
+
 
 
 }

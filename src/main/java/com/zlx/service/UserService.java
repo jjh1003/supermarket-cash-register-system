@@ -22,6 +22,7 @@ public interface UserService {
     public Integer updateUserInfo(User user);
 
     public Integer queryIdCardCount(User user);
+    public Integer userCount();
 
 
 

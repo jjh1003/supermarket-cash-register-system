@@ -1,6 +1,7 @@
 package com.zlx.service.impl;
 
 import com.zlx.dao.BuyRecordDao;
+import com.zlx.pojo.Admin;
 import com.zlx.pojo.BuyRecord;
 import com.zlx.pojo.BuyTotal;
 import com.zlx.service.BuyRecordService;
@@ -21,6 +22,9 @@ public class BuyRecordServiceImpl implements BuyRecordService {
 
     @Override
     public Integer deleteBuyRecord(BuyTotal buyTotal) {
+
         return buyRecordDao.deleteBuyRecord(buyTotal);
     }
+
+
 }

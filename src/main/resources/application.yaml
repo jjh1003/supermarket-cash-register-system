@@ -23,6 +23,7 @@ spring:
 
 #配置mybatis规则
 mybatis:
+
   mapper-locations: classpath:mapper/*.xml
   #配置全局配置文件，使用此配置后不能使用config-location
   configuration:

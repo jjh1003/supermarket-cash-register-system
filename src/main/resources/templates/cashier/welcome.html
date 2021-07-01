@@ -51,11 +51,11 @@
                                                 <div class="panel-body">
                                                     <div class="panel-title">
                                                         <span class="label pull-right layui-bg-blue">实时</span>
-                                                        <h5>用户统计</h5>
+                                                        <h5>销售总额</h5>
                                                     </div>
                                                     <div class="panel-content">
-                                                        <h1 class="no-margins">1234</h1>
-                                                        <small>当前分类总记录数</small>
+                                                        <h1 class="no-margins" th:text="${saleTotal!=null?saleTotal:0}">1234</h1>
+                                                        <small>当前收银台销售总额</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -68,8 +68,8 @@
                                                         <h5>商品统计</h5>
                                                     </div>
                                                     <div class="panel-content">
-                                                        <h1 class="no-margins">1234</h1>
-                                                        <small>当前分类总记录数</small>
+                                                        <h1 class="no-margins" th:text="${goodsCount}">1234</h1>
+                                                        <small>当前在售商品数</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -79,11 +79,11 @@
                                                 <div class="panel-body">
                                                     <div class="panel-title">
                                                         <span class="label pull-right layui-bg-orange">实时</span>
-                                                        <h5>浏览统计</h5>
+                                                        <h5>会员</h5>
                                                     </div>
                                                     <div class="panel-content">
-                                                        <h1 class="no-margins">1234</h1>
-                                                        <small>当前分类总记录数</small>
+                                                        <h1 class="no-margins" th:text="${userCount}">1234</h1>
+                                                        <small>当前会员总数</small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -96,8 +96,8 @@
                                                         <h5>订单统计</h5>
                                                     </div>
                                                     <div class="panel-content">
-                                                        <h1 class="no-margins">1234</h1>
-                                                        <small>当前分类总记录数</small>
+                                                        <h1 class="no-margins" th:text="${totalCount}">1234</h1>
+                                                        <small>当前收银台销售订单</small>
                                                     </div>
                                                 </div>
                                             </div>

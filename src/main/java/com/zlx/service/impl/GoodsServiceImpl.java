@@ -28,7 +28,10 @@ public class GoodsServiceImpl implements GoodsService {
         return goodsDao.queryAllGoods();
     }
 
-
+    @Override
+    public Integer goodsCount() {
+        return goodsDao.goodsCount();
+    }
 
     @Override
     public Goods queryGoodsByNo(Goods goods) {

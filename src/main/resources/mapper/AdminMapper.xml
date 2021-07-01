@@ -61,4 +61,15 @@
     <select id="queryAdminCount" resultType="int" parameterType="com.zlx.pojo.Admin">
         select count(*) from admin where username=#{username}
     </select>
+
+    <select id="findAdmin" resultType="com.zlx.pojo.Admin" parameterType="com.zlx.pojo.Admin">
+           select * from admin where username=#{username} and password=#{password} and identify=#{identify}
+    </select>
+    <update id="UpdatePassword" parameterType="String">
+           update admin set password=#{newPassword} where username=#{username}
+
+    </update>
+    <select id="adminCount" resultType="int">
+        SELECT COUNT(adminid) FROM ADMIN WHERE identify='收银员'
+    </select>
 </mapper>

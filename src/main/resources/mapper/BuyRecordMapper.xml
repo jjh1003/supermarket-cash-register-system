@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"><!--mapper文件约束头-->
+<mapper namespace="com.zlx.dao.BuyRecordDao">
+    <insert id="insertToBuyRecord" parameterType="com.zlx.pojo.BuyRecord" >
+          insert into buyrecord(totalid,gid,buyAmount) values(#{totalid},#{gid},#{buyAmount})
+
+    </insert>
+    <delete id="deleteBuyRecord" parameterType="com.zlx.pojo.BuyRecord" >
+         delete from buyrecord where totalid=#{totalid}
+
+    </delete>
+
+
+</mapper>

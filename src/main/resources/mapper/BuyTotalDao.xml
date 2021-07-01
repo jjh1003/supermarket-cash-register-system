@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"><!--mapper文件约束头-->
+<mapper namespace="com.zlx.dao.BuyTotalDao">
+    <insert id="insertToBuyTotal" parameterType="com.zlx.pojo.BuyTotal" useGeneratedKeys="true" keyProperty="totalid">
+          INSERT INTO buytotal(uid,salesMoney,payMoney,changeMoney,adminid) VALUES (#{uid},#{salesMoney},#{payMoney},#{changeMoney},#{adminid})
+
+    </insert>
+    <delete id="deleteBuyTotal" parameterType="com.zlx.pojo.BuyTotal">
+            delete from buytotal where totalid=#{totalid}
+
+    </delete>
+    <select id="salesTotal" resultType="double" parameterType="com.zlx.pojo.Admin">
+
+         SELECT SUM(salesMoney) FROM buytotal WHERE adminid=#{adminid}
+    </select>
+    <select id="totalIdCount" resultType="int" parameterType="com.zlx.pojo.Admin">
+        SELECT COUNT(totalid) FROM buytotal where adminid=#{adminid}
+    </select>
+    <select id="allSalesTotal" resultType="double">
+        SELECT SUM(salesMoney) FROM buytotal
+
+    </select>
+    <select id="allTotalIdCount" resultType="int">
+        SELECT COUNT(totalid) FROM buytotal
+
+    </select>
+</mapper>

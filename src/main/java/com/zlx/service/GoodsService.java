@@ -24,6 +24,7 @@ public interface GoodsService {
 
     public Integer decreaseGoodsStock(BuyRecord buyRecord);
 
+    public Integer goodsCount();
 
 
 }

@@ -22,4 +22,24 @@ public class BuyTotalServiceImpl implements BuyTotalService {
     public Integer deleteBuyTotal(BuyTotal buyTotal) {
         return buyTotalDao.deleteBuyTotal(buyTotal);
     }
+    @Override
+    public Double salesTotal(Admin admin) {
+
+        return buyTotalDao.salesTotal(admin);
+    }
+
+    @Override
+    public Integer totalIdCount(Admin admin) {
+        return buyTotalDao.totalIdCount(admin);
+    }
+
+    @Override
+    public Double allSalesTotal() {
+        return buyTotalDao.allSalesTotal();
+    }
+
+    @Override
+    public Integer allTotalIdCount() {
+        return buyTotalDao.allTotalIdCount();
+    }
 }

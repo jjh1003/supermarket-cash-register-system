@@ -60,4 +60,9 @@ public class AdminServiceImpl implements AdminService {
     public Integer queryAdminCount(Admin admin) {
         return adminDao.queryAdminCount(admin);
     }
+
+    @Override
+    public Integer adminCount() {
+        return adminDao.adminCount();
+    }
 }

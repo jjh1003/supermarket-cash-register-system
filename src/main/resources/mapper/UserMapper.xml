@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"><!--mapper文件约束头-->
+<mapper namespace="com.zlx.dao.UserDao">
+    <delete id="deleteUserById" parameterType="com.zlx.pojo.User">
+           delete from user where uid=#{uid}
+
+    </delete>
+    <insert id="addUser" parameterType="com.zlx.pojo.User">
+            insert into user(idCard,integral) value (#{idCard},#{integral})
+
+    </insert>
+    <select id="queryAllUser" parameterType="com.zlx.pojo.User" resultType="com.zlx.pojo.User">
+            select * from user
+
+    </select>
+    <select id="queryUserByCondition" parameterType="com.zlx.pojo.User" resultType="com.zlx.pojo.User">
+        select * from user where 1=1
+        <if test="idCard != null and idCard != ''">
+            AND idCard LIKE CONCAT(CONCAT('%',#{idCard}),'%')
+        </if>
+
+    </select>
+    <update id="updateIntegral" parameterType="map">
+           update user set integral=integral+#{integral} where uid=#{uid}
+
+    </update>
+    <update id="updateUserInfo" parameterType="com.zlx.pojo.User">
+            update user set idCard=#{idCard},integral=#{integral} where uid=#{uid}
+
+    </update>
+    <select id="queryIdCardCount" parameterType="com.zlx.pojo.User" resultType="int">
+            select count(*) from user where idCard=#{idCard}
+
+    </select>
+    <select id="userCount" resultType="int">
+        SELECT COUNT(uid) FROM USER
+    </select>
+</mapper>

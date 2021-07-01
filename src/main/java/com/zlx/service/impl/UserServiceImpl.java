@@ -58,4 +58,9 @@ public class UserServiceImpl implements UserService {
     public Integer queryIdCardCount(User user) {
         return userDao.queryIdCardCount(user);
     }
+
+    @Override
+    public Integer userCount() {
+        return userDao.userCount();
+    }
 }

@@ -10,5 +10,9 @@ public interface BuyTotalService {
 
     public Integer deleteBuyTotal(BuyTotal buyTotal);
 
+    public Double salesTotal(Admin admin);
+    public Integer totalIdCount(Admin admin);
+    public Double allSalesTotal();
+    public Integer allTotalIdCount();
 
 }

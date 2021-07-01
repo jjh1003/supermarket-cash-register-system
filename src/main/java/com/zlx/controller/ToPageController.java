@@ -2,7 +2,7 @@ package com.zlx.controller;
 
 import com.zlx.pojo.Admin;
 import com.zlx.pojo.BuyTotal;
-import com.zlx.service.BuyTotalService;
+import com.zlx.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +13,14 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class ToPageController {
 
+    @Autowired
+    private BuyTotalService buyTotalService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private GoodsService goodsService;
+    @Autowired
+    private AdminService adminService;
     @RequestMapping(value = {"/login","/"})
     public String toLoginPage(HttpSession session){
         return "login";
@@ -29,7 +37,17 @@ public class ToPageController {
     }
 
     @RequestMapping("/cashier/welcome")
-    public String toCashierWelcomePage(){
+    public String toCashierWelcomePage(Model model,HttpSession session){
+        Admin admin = (Admin) session.getAttribute("admin");
+        Double saleTotal = buyTotalService.salesTotal(admin);
+        Integer totalCount = buyTotalService.totalIdCount(admin);
+        Integer userCount = userService.userCount();
+        Integer goodsCount = goodsService.goodsCount();
+        model.addAttribute("goodsCount",goodsCount);
+        model.addAttribute("userCount",userCount);
+        model.addAttribute("saleTotal",saleTotal);
+        model.addAttribute("totalCount",totalCount);
+
         return "cashier/welcome";
     }
 
@@ -45,7 +63,15 @@ public class ToPageController {
 
 
     @RequestMapping("/administrator/welcome")
-    public String toAdministratorWelcomePage(){
+    public String toAdministratorWelcomePage(Model model){
+        Integer adminCount = adminService.adminCount();
+        Integer goodsCount = goodsService.goodsCount();
+        Double allSalesTotal = buyTotalService.allSalesTotal();
+        Integer allTotalIdCount= buyTotalService.allTotalIdCount();
+        model.addAttribute("allTotalIdCount",allTotalIdCount);
+        model.addAttribute("adminCount",adminCount);
+        model.addAttribute("goodsCount",goodsCount);
+        model.addAttribute("allSalesTotal",allSalesTotal);
         return "/administrator/welcome";
     }
 

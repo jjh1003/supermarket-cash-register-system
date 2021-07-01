@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"><!--mapper文件约束头-->
+<mapper namespace="com.zlx.dao.GoodsDao">
+
+    <select id="queryGoodsByCondition" parameterType="com.zlx.pojo.Goods" resultType="com.zlx.pojo.Goods">
+        select * from goods where 1=1
+        <if test="gNo != null and gNo != ''">
+            AND gNo LIKE CONCAT(CONCAT('%',#{gNo}),'%')
+        </if>
+        <if test="gName != null and gName != ''">
+            AND gName LIKE CONCAT(CONCAT('%',#{gName}),'%')
+        </if>
+        <if test="isBargainPrice != null and isBargainPrice != ''">
+            AND isBargainPrice=#{isBargainPrice}
+        </if>
+
+
+    </select>
+    <select id="queryGoodsByNo" resultType="com.zlx.pojo.Goods" parameterType="com.zlx.pojo.Goods">
+            select * from goods where gNo=#{gNo}
+
+    </select>
+    <select id="queryAllGoods" parameterType="com.zlx.pojo.Goods" resultType="com.zlx.pojo.Goods">
+        select * from goods
+
+    </select>
+    <delete id="deleteGoodsById" parameterType="com.zlx.pojo.Goods">
+            delete from goods where gid=#{gid}
+
+    </delete>
+    <update id="updateGoods" parameterType="com.zlx.pojo.Goods">
+            update goods set gNo=#{gNo},gName=#{gName},price=#{price},isBargainPrice=#{isBargainPrice},bargainPrice=#{bargainPrice},unit=#{unit},stock=#{stock} where gid=#{gid}
+
+    </update>
+    <insert id="insertGoods" parameterType="com.zlx.pojo.Goods">
+           insert into goods(gNo,gName,price,isBargainPrice,bargainPrice,unit,stock) values(#{gNo},#{gName},#{price},#{isBargainPrice},#{bargainPrice},#{unit},#{stock})
+
+    </insert>
+    <select id="queryGoodsNoCount" parameterType="com.zlx.pojo.Goods" resultType="int">
+           select count(*) from goods where gNo=#{gNo}
+
+    </select>
+   <update id="decreaseGoodsStock" parameterType="com.zlx.pojo.BuyRecord">
+         update goods set stock=stock-#{buyAmount} where gid=#{gid}
+
+   </update>
+    <select id="goodsCount" resultType="int">
+        SELECT COUNT(gid) FROM goods
+    </select>
+</mapper>
