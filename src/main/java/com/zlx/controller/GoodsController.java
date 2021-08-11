@@ -4,7 +4,6 @@ import com.github.pagehelper.PageInfo;
 import com.zlx.pojo.BuyRecord;
 import com.zlx.pojo.Goods;
 import com.zlx.pojo.TableData;
-import com.zlx.pojo.User;
 import com.zlx.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -60,7 +59,7 @@ public class GoodsController {
     public String QueryGoodsList(Model model) {
         List<Goods> goodsList = goodsService.queryAllGoods();
         model.addAttribute("goodsList", goodsList);
-        return "/cashier/cashRegister";
+        return "cashier/cashRegister";
     }
 
     @RequestMapping("/deleteGoods")

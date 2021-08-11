@@ -293,18 +293,20 @@
 
                 var payMoney = $("#payMoney").val();
 
-                var changeMoney = payMoney - salesMoney;
-                changeMoney=changeMoney.toFixed(2)
+
+
                 var uid = $("#uid").text();
                 if (uid != "") {
                     $(".layui-table-total td[data-field='realityPrice']").text((salesMoney * 0.95).toFixed(2));
-
+                    salesMoney=(salesMoney*0.95).toFixed(2)
                 }
+                var changeMoney = payMoney - salesMoney;
+                changeMoney=changeMoney.toFixed(2)
                 var adminid = $("#adminid").text();
                 //layer.alert(salesMoney);
 
 
-                if (salesMoney != "" && payMoney != "" && changeMoney > 0 && adminid != "") {
+                if (salesMoney != "" && payMoney != "" && changeMoney >= 0 && adminid != "") {
                     var buyRecordList = JSON.stringify(data);
                     for (let i = 0; i < data.length; i++) {
                         if (data[i].gid == "") {
@@ -412,6 +414,7 @@
                         title: '你的输入有误！'
                     });
                 }
+
 
 
             } else if (obj.event === 'delete') {  // 监听删除操作

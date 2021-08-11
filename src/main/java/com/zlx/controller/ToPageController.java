@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 
 @Controller
 public class ToPageController {
@@ -21,95 +22,107 @@ public class ToPageController {
     private GoodsService goodsService;
     @Autowired
     private AdminService adminService;
-    @RequestMapping(value = {"/login","/"})
-    public String toLoginPage(HttpSession session){
+
+    @RequestMapping(value = {"/login", "/"})
+    public String toLoginPage(HttpSession session) {
         return "login";
     }
 
     @RequestMapping("/cashier")
-    public String toCashierPage(){
+    public String toCashierPage() {
         return "cashier";
     }
+
     @RequestMapping("/administrator")
-    public String toAdministratorPage(HttpSession session){
+    public String toAdministratorPage(HttpSession session) {
 
         return "administrator";
     }
 
     @RequestMapping("/cashier/welcome")
-    public String toCashierWelcomePage(Model model,HttpSession session){
+    public String toCashierWelcomePage(Model model, HttpSession session) {
         Admin admin = (Admin) session.getAttribute("admin");
         Double saleTotal = buyTotalService.salesTotal(admin);
+        BigDecimal b = new BigDecimal(saleTotal);
+        saleTotal = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
         Integer totalCount = buyTotalService.totalIdCount(admin);
         Integer userCount = userService.userCount();
         Integer goodsCount = goodsService.goodsCount();
-        model.addAttribute("goodsCount",goodsCount);
-        model.addAttribute("userCount",userCount);
-        model.addAttribute("saleTotal",saleTotal);
-        model.addAttribute("totalCount",totalCount);
+        model.addAttribute("goodsCount", goodsCount);
+        model.addAttribute("userCount", userCount);
+        model.addAttribute("saleTotal", saleTotal);
+        model.addAttribute("totalCount", totalCount);
 
         return "cashier/welcome";
     }
 
     @RequestMapping("/addVip")
-    public String toAddVipPage(){
+    public String toAddVipPage() {
         return "addVip";
     }
 
-    @RequestMapping("/cashier/cashRegister")
-    public String toCashierCashRegisterPage(){
-        return "cashier/cashRegister";
-    }
+//    @RequestMapping("/cashRegister")
+//    public String toCashierCashRegisterPage() {
+//        return "cashier/cashRegister";
+//    }
 
 
     @RequestMapping("/administrator/welcome")
-    public String toAdministratorWelcomePage(Model model){
+    public String toAdministratorWelcomePage(Model model) {
         Integer adminCount = adminService.adminCount();
         Integer goodsCount = goodsService.goodsCount();
         Double allSalesTotal = buyTotalService.allSalesTotal();
-        Integer allTotalIdCount= buyTotalService.allTotalIdCount();
-        model.addAttribute("allTotalIdCount",allTotalIdCount);
-        model.addAttribute("adminCount",adminCount);
-        model.addAttribute("goodsCount",goodsCount);
-        model.addAttribute("allSalesTotal",allSalesTotal);
-        return "/administrator/welcome";
+        Integer allTotalIdCount = buyTotalService.allTotalIdCount();
+        model.addAttribute("allTotalIdCount", allTotalIdCount);
+        model.addAttribute("adminCount", adminCount);
+        model.addAttribute("goodsCount", goodsCount);
+        model.addAttribute("allSalesTotal", allSalesTotal);
+        return "administrator/welcome";
     }
 
     @RequestMapping("/administrator/viewCashier")
-    public String toAdministratorViewCashier(){
+    public String toAdministratorViewCashier() {
         return "administrator/viewCashier";
     }
+
     @RequestMapping("/administrator/addCashier")
-    public String toAdministratorAddCashier(){
+    public String toAdministratorAddCashier() {
         return "administrator/addCashier";
     }
+
     @RequestMapping("/commodityStocks")
-    public String toAdministratorCommodityManagement(){
+    public String toAdministratorCommodityManagement() {
         return "commodityStocks";
     }
+
     @RequestMapping("/salesRecord")
-    public String toAdministratorSalesRecord(){
+    public String toAdministratorSalesRecord() {
 
         return "salesRecord";
     }
+
     @RequestMapping("/viewVip")
-    public String toViewVip(){
+    public String toViewVip() {
         return "viewVip";
     }
+
     @RequestMapping("/updatePassword")
-    public String toUpdatePassword(){
+    public String toUpdatePassword() {
         return "updatePassword";
     }
+
     @RequestMapping("/editVip")
-    public String toEditVipPage(){
+    public String toEditVipPage() {
         return "editVip";
     }
+
     @RequestMapping("/addGoods")
-    public String toAddGoodsPage(){
+    public String toAddGoodsPage() {
         return "addGoods";
     }
+
     @RequestMapping("/editGoods")
-    public String toEditGoodsPage(){
+    public String toEditGoodsPage() {
         return "editGoods";
     }
 }
