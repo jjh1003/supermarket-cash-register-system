@@ -12,4 +12,5 @@
 ### 结构说明
 
 1.前端采用jQuery+layui的前端框架+layuimini的后台管理系统
+
 2.后端采用mybatis，springboot
