@@ -5,7 +5,7 @@
 <mapper namespace="com.zlx.dao.AdminDao">
     <select id="queryAllRecordByCondition" parameterType="map" resultMap="AdminMapping">
         SELECT buytotal.totalid AS buy_tid,idcard,gname,price,isbargainprice,bargainPrice,unit,buyAmount,salesMoney,payMoney,changeMoney,integral,username
-        FROM ADMIN ,buyrecord,buytotal,goods,USER WHERE
+        FROM admin ,buyrecord,buytotal,goods,user WHERE
         admin.adminid=buytotal.adminid AND user.uid=buytotal.uid
         AND buytotal.totalid=buyrecord.totalid AND goods.gid = buyrecord.gid
         <if test="username!=null and username!=''">
@@ -70,6 +70,6 @@
 
     </update>
     <select id="adminCount" resultType="int">
-        SELECT COUNT(adminid) FROM ADMIN WHERE identify='收银员'
+        SELECT COUNT(adminid) FROM admin WHERE identify='收银员'
     </select>
 </mapper>
